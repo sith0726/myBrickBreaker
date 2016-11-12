@@ -54,7 +54,8 @@ var key_right_down = false;
 
 //Control var
 var startGame = false;
-var pause = false;
+var pause;
+var pausing = false;
 
 function init(){
     
@@ -66,7 +67,7 @@ function init(){
         {src:"resources/brick.png", id:"brick"},
         {src:"resources/start.png", id:"start"},
         {src:"resources/paddle.png", id:"rect"},
-        {src:"resources/bala.png", id:"circle"},
+        {src:"resources/ball.png", id:"circle"},
         {src:"resources/press_to_continue.png", id:"press_to_continue"},
         {src:"resources/pause.png", id:"pause"},
         {src:"resources/Trump1.png", id:"Trump1"},
@@ -91,8 +92,8 @@ function init(){
 }
 
 function play(){
-    if(pause)
-        return pauseGame();
+    if(pausing)
+        return;
     if(!startGame)
         return;
     updateCircle(circle);
@@ -101,10 +102,6 @@ function play(){
     stage.update();
 }
 
-function pauseGame(){
-
-}
- 
 function loading() {
     startGame = false;
 
@@ -124,7 +121,7 @@ function loading() {
     stage.update();
 
     var pause_scale = new createjs.Matrix2D();
-    pause_scale.scale(0.48, 0.5);
+    pause_scale.scale(2, 0.5);
     pause = new createjs.Shape();
     pause.graphics.beginBitmapFill(preloader.getResult("pause"), "no-repeat", pause_scale).drawRect(0,0,500,600);
     pause.y = 300
@@ -143,13 +140,13 @@ function loading() {
     circle = new createjs.Shape();
     circle.graphics.beginFill(preloader.getResult("circle"), "no-repeat", circle_scale).drawCircle(0,0, circle_radius);
     circle.x = screen_width/2;
-    circle.y = screen_height/2;
+    circle.y = screen_height - rect_height - circle_radius - 10;
     stage.addChild(circle);
     stage.update();
     
     rect = new createjs.Shape();
     rect.graphics.beginBitmapFill(preloader.getResult("rect")).drawRoundRect(0,0,rect_width,rect_height,3);
-    rect.x = (rect_width+screen_width)/2;
+    rect.x = (screen_width - rect_width)/2;
     rect.y = screen_height - rect_height - 10;
     stage.addChild(rect);
     stage.update();
@@ -283,16 +280,27 @@ function handleKeyDown(e) {
     switch(e.keyCode) {
         //left arrow key
         case 37:
+        case 65:
             key_left_down = true;
             key_right_down = false;
             break;
         //right arrow key
         case 39:
+        case 68:
             key_left_down = false;
             key_right_down = true;
             break;
         case 80:
-            pause = !pause;
+            if(pausing){
+                stage.removeChild(pause);
+                stage.update();
+                pausing = false;
+            }
+            else{
+                stage.addChild(pause);
+                stage.update();
+                pausing = true;
+            }
             break;
         default:
             if(!startGame){
@@ -309,10 +317,12 @@ function handleKeyUp(e) {
     switch(e.keyCode) {
         //left arrow key
         case 37:
+        case 65:
             key_left_down = false;
             break;
         //right arrow key
         case 39:
+        case 68:
             key_right_down = false;
             break;
     }
