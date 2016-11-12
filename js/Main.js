@@ -19,7 +19,7 @@ var rect;
 var blocks;
 
 //Shape data
-var circle_radius = 10;
+var circle_radius = 15;
 var rect_width = 100;
 var rect_height = 10;
 var block_width = 100;
