@@ -76,14 +76,21 @@ function init(){
 }
  
 function handleComplete() {
-         
+    var matrix1 = new createjs.Matrix2D();
+    matrix1.scale(4, 7);
+
+
     bg = new createjs.Shape();
-    bg.graphics.beginBitmapFill(preloader.getResult("bg")).drawRect(0,0,500,600);
+    bg.graphics.beginBitmapFill(preloader.getResult("bg"), "no-repeat", matrix1).drawRect(0,0,500,600);
     stage.addChild(bg);
     stage.update();
     
+
+    var matrix2 = new createjs.Matrix2D();
+    matrix2.scale(0.5, 0.5);
+
     Trump1 = new createjs.Shape();
-    Trump1.graphics.beginBitmapFill(preloader.getResult("Trump1")).drawRect(0,0,300,200);
+    Trump1.graphics.beginBitmapFill(preloader.getResult("Trump1"), "no-repeat", matrix2).drawRect(0,0,300,200);
     Trump1.x = 100;
     Trump1.y = 0;
     stage.addChild(Trump1);
