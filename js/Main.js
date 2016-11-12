@@ -35,6 +35,9 @@ var Trump1;
 var Trump2;
 var press_to_continue;
 
+//Audio:
+var audio_wrong;
+
 //Win - Lose
 var win;
 var lose;
@@ -73,11 +76,9 @@ function init(){
         {src:"resources/Trump1.png", id:"Trump1"},
         {src:"resources/Trump2.png", id:"Trump2"},
         {src:"resources/win.png", id:"win"},
-        {src:"resources/lose.png", id:"lose"},
-        {src:"hit.mp3|hit.ogg", id:"hit"},
-        {src:"wall.mp3|wall.ogg", id:"wall"}
+        {src:"resources/lose.png", id:"lose"}
     ];
-    
+
     preloader = new createjs.LoadQueue(false);
     preloader.addEventListener("complete", loading);
     preloader.loadManifest(manifest, true, "./");
@@ -127,7 +128,7 @@ function loading() {
     pause.y = 300
 
     var Trump1_scale = new createjs.Matrix2D();
-    Trump1_scale.scale(0.5, 0.5);
+    Trump1_scale.scale(0.5, 0.47);
     Trump1 = new createjs.Shape();
     Trump1.graphics.beginBitmapFill(preloader.getResult("Trump1"), "no-repeat", Trump1_scale).drawRect(0,0,300,200);
     Trump1.x = 100;
@@ -152,17 +153,19 @@ function loading() {
     stage.update();
 
     var block_scale = new createjs.Matrix2D();
-    block_scale.scale(1, 1);
+    block_scale.scale(1, 0.49);
     blocks = [];
     for(var i = 0; i < number_of_blocks; i++){
         var brick = new createjs.Shape();
-        brick.graphics.beginBitmapFill(preloader.getResult("brick")).drawRoundRect(0,0,block_width,block_height,10);
+        brick.graphics.beginBitmapFill(preloader.getResult("brick"),"no-repeat", block_scale).drawRoundRect(0,0,block_width,block_height,10);
         brick.x = block_width*(i%block_per_row);
         brick.y = block_height*Math.floor(i/block_per_row);
         blocks.push(brick);
         stage.addChild(brick);
         stage.update();
     }
+
+    audio_wrong = new Audio('resources/wrong1.mp3');
 }
 
 function updateCircle(circle){
@@ -257,6 +260,7 @@ function testHitBlock(stage, circle, blocks){
                 stage.removeChild(blocks[i]);
                 stage.update();
                 blocks.splice(i,1);
+                audio_wrong.play();
                 return;
             }
         }
@@ -267,6 +271,7 @@ function testHitBlock(stage, circle, blocks){
                 stage.removeChild(blocks[i]);
                 stage.update();
                 blocks.splice(i,1);
+                audio_wrong.play();
                 return;
             }
         }
