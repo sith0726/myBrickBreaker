@@ -34,9 +34,9 @@
 // 
 document.getElementById("PongStage").style.background = 'Gainsboro';
 
-var speed_x_circle = 1;
-var speed_y_circle = 1;
-var speed_x_rect = 1;
+var speed_x_circle = 2;
+var speed_y_circle = 2;
+var speed_x_rect = 5;
 
 //var tkr = new Object;
 ////preloader
@@ -51,21 +51,34 @@ function init(){
     var circle = new createjs.Shape();
     
     circle.graphics.beginFill("DeepSkyBlue").drawCircle(0,0,10);
-    circle.x = 50;
-    circle.y = 100;
+    circle.x = 250;
+    circle.y = 300;
     stage.addChild(circle);
     stage.update();
     
     var rect = new createjs.Shape();
-    rect.graphics.beginFill("Black").drawRoundRect(200,470,100,10,3);
+    rect.graphics.beginFill("Black").drawRoundRect(0,0,100,10,3);
+    rect.x = 200;
+    rect.y = 570;
     stage.addChild(rect);
     stage.update();
+    var blocks = [];
+    for(var i = 0; i < 30; i++){
+        var brick = new createjs.Shape();
+        brick.graphics.beginFill("Black").drawRoundRect(0,0,50,10,5);
+        brick.x = 50*(i%10);
+        brick.y = 10*Math.floor(i/10);
+        blocks.push(brick);
+        stage.addChild(brick);
+        stage.update();
+    }
     
     createjs.Ticker.addEventListener("tick", tick);
     createjs.Ticker.setInterval(10);
     function tick(){
         updateCircle(circle);
         updateRect(rect);
+        hitTest(stage, circle, rect, blocks);
         stage.update();
     }
     
@@ -91,18 +104,14 @@ function init(){
 //    preloader.loadManifest(manifest);
 // 
 //    /* Ticker */
-    
-}
 
-function addTitleView(){
-    
 }
 
 function updateCircle(circle){
     if(circle.x >= 492 || circle.x <= 8){
         speed_x_circle = -speed_x_circle;
     }
-    if(circle.y >= 498 || circle.y <= 8){
+    if(circle.y >= 598 || circle.y <= 8){
         speed_y_circle = -speed_y_circle;
     }
     circle.x += speed_x_circle;
@@ -110,8 +119,47 @@ function updateCircle(circle){
 }
 
 function updateRect(rect){
-    if(rect.x >= 400 || rect.x <= 10){
+    if(rect.x >= 400 || rect.x <= 2){
         speed_x_rect = -speed_x_rect;
     }
     rect.x += speed_x_rect;
+}
+
+function hitTest(stage, circle, rect, blocks){
+    if(circle.y > rect.y){
+        lose();
+    }
+    if(circle.x >= rect.x && circle.x <= rect.x+100){
+        if(rect.y -circle.y <= 8){
+            speed_y_circle = -speed_y_circle;
+            speed_x_circle += speed_x_rect/4;
+        }
+    }
+    testHitBlock(stage, circle, blocks);
+}
+
+function lose(){
+//    alert("loser!!!");
+}
+
+function testHitBlock(stage, circle, blocks){
+    for(var i = 0; i < blocks.length; i++){
+        if(circle.x >= blocks[i].x && circle.x <= blocks[i].x+50){
+            if((blocks[i].y -circle.y >= -18 && blocks[i].y -circle.y < 0) || (blocks[i].y -circle.y <= 8 && blocks[i].y -circle.y > 0)){
+                speed_y_circle = -speed_y_circle;
+                stage.removeChild(blocks[i]);
+                stage.update();
+                blocks.splice(i,1);
+                return;
+            }
+        }      
+//        if(circle.x >= blocks[i].x && circle.x <= blocks[i].x+50){
+//            if(blocks[i].y -circle.y <= 8 || blocks[i].y -circle.y >= -8){
+//                speed_y_circle = -speed_y_circle;
+//                stage.removeChild(blocks[i]);
+//                return;
+//            }
+//        } 
+    }
+
 }
