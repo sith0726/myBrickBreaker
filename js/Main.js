@@ -51,6 +51,7 @@ var manifest;
 //Document Manipulation
 document.onkeydown = handleKeyDown;
 document.onkeyup = handleKeyUp;
+document.onmousedown = reset
 
 var key_left_down = false;
 var key_right_down = false;
@@ -59,6 +60,7 @@ var key_right_down = false;
 var startGame = false;
 var pause;
 var pausing = false;
+var end = false;
 
 function init(){
     
@@ -137,9 +139,9 @@ function loading() {
     stage.update();
          
     var circle_scale = new createjs.Matrix2D();
-    circle_scale.scale(1, 1);
+    circle_scale.scale(0.10, 0.10);
     circle = new createjs.Shape();
-    circle.graphics.beginFill(preloader.getResult("circle"), "no-repeat", circle_scale).drawCircle(0,0, circle_radius);
+    circle.graphics.beginBitmapFill(preloader.getResult("circle"), "no-repeat", circle_scale).drawCircle(0,0, circle_radius);
     circle.x = screen_width/2;
     circle.y = screen_height - rect_height - circle_radius - 10;
     stage.addChild(circle);
@@ -230,25 +232,33 @@ function hitTest(stage, circle, rect, blocks){
 }
 
 function lose_stage(){
-    //alert("LOSER!!!");
-    //reset();
+    var lose_scale = new createjs.Matrix2D();
+    lose_scale.scale(1.2,1.35);
+    lose = new createjs.Shape();
+    lose.graphics.beginBitmapFill(preloader.getResult("lose"), "no-repeat", lose_scale).drawRect(0,0,500,600);
+    stage.addChild(lose);
+    stage.update();
+    end = true;
 }
 
 function win_stage(){
+    var win_scale = new createjs.Matrix2D();
+    win_scale.scale(1.3,1.55);
     win = new createjs.Shape();
-    win.graphics.beginBitmapFill(preloader.getResult("win")).drawRect(0,0,500,600);
+    win.graphics.beginBitmapFill(preloader.getResult("win"), "no-repeat", win_scale).drawRect(0,0,500,600);
     stage.addChild(win);
     stage.update();
-    alert("WINNER, refresh to reset.");
+    end = true;
 }
 
 function reset(){
+    if(!end)
+        return;
     stage.removeAllChildren();
     loading();
-    circle.x = screen_width/2;
-    circle.y = screen_height/2;
     speed_x_circle = default_circle_speed;
     speed_y_circle = default_circle_speed;
+    end = false;
 }
 
 function testHitBlock(stage, circle, blocks){
@@ -256,22 +266,23 @@ function testHitBlock(stage, circle, blocks){
         if(circle.x >= blocks[i].x && circle.x <= blocks[i].x+block_width){
             if((blocks[i].y -circle.y >= -(circle_radius+block_height) && blocks[i].y -circle.y < -circle_radius && speed_y_circle < 0) 
                     || (blocks[i].y -circle.y <= circle_radius && blocks[i].y -circle.y > 0 && speed_y_circle > 0)){
+                audio_wrong.play();
                 speed_y_circle = -speed_y_circle;
                 stage.removeChild(blocks[i]);
                 stage.update();
                 blocks.splice(i,1);
-                audio_wrong.play();
+
                 return;
             }
         }
         if(circle.y >= blocks[i].y && circle.y <= blocks[i].y+block_height){
             if((blocks[i].x -circle.x >= -(block_width + circle_radius) && blocks[i].x -circle.x < -circle_radius && speed_x_circle < 0) 
                     || (blocks[i].x -circle.x <= circle_radius && blocks[i].x -circle.x > 0 && speed_x_circle > 0)){
+                audio_wrong.play();
                 speed_x_circle = -speed_x_circle;
                 stage.removeChild(blocks[i]);
                 stage.update();
                 blocks.splice(i,1);
-                audio_wrong.play();
                 return;
             }
         }
