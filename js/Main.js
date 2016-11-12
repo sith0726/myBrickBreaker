@@ -52,6 +52,10 @@ document.onkeyup = handleKeyUp;
 var key_left_down = false;
 var key_right_down = false;
 
+//Control var
+var startGame = false;
+var pause = false;
+
 function init(){
     
     stage = new createjs.Stage("PongStage");
@@ -64,6 +68,7 @@ function init(){
         {src:"resources/paddle.png", id:"rect"},
         {src:"resources/bala.png", id:"circle"},
         {src:"resources/press_to_continue.png", id:"press_to_continue"},
+        {src:"resources/pause.png", id:"pause"},
         {src:"resources/Trump1.png", id:"Trump1"},
         {src:"resources/Trump2.png", id:"Trump2"},
         {src:"resources/win.png", id:"win"},
@@ -79,24 +84,30 @@ function init(){
     
     createjs.Ticker.addEventListener("tick", tick);
     createjs.Ticker.setInterval(10);
-    this.slow_down = 1;
     
     function tick(){
-        if(this.slow_down%500 === 0){
-            speed_x_circle = speed_x_circle*9/10;
-            this.slow_down = 0;
-        }
-        this.slow_down+=1;
-        updateCircle(circle);
-        updateRect(rect);
-        hitTest(stage, circle, rect, blocks);
-        stage.update();
+        play();
     }
-    
+}
+
+function play(){
+    if(pause)
+        return pauseGame();
+    if(!startGame)
+        return;
+    updateCircle(circle);
+    updateRect(rect);
+    hitTest(stage, circle, rect, blocks);
+    stage.update();
+}
+
+function pauseGame(){
 
 }
  
 function loading() {
+    startGame = false;
+
     var bg_scale = new createjs.Matrix2D();
     bg_scale.scale(4, 7);
     bg = new createjs.Shape();
@@ -111,8 +122,12 @@ function loading() {
     press_to_continue.y = 300
     stage.addChild(press_to_continue);
     stage.update();
-    
 
+    var pause_scale = new createjs.Matrix2D();
+    pause_scale.scale(0.48, 0.5);
+    pause = new createjs.Shape();
+    pause.graphics.beginBitmapFill(preloader.getResult("pause"), "no-repeat", pause_scale).drawRect(0,0,500,600);
+    pause.y = 300
 
     var Trump1_scale = new createjs.Matrix2D();
     Trump1_scale.scale(0.5, 0.5);
@@ -190,7 +205,7 @@ function updateRect(rect){
 
 function hitTest(stage, circle, rect, blocks){
     if(circle.y > rect.y){
-        lose();
+        lose_stage();
     }
     if(circle.x >= rect.x && circle.x <= rect.x+rect_width){
         if(rect.y -circle.y <= circle_radius){
@@ -210,16 +225,16 @@ function hitTest(stage, circle, rect, blocks){
     }
     testHitBlock(stage, circle, blocks);
     if(blocks.length == 0){
-        win();
+        win_stage();
     }
 }
 
-function lose(){
+function lose_stage(){
     //alert("LOSER!!!");
     //reset();
 }
 
-function win(){
+function win_stage(){
     win = new createjs.Shape();
     win.graphics.beginBitmapFill(preloader.getResult("win")).drawRect(0,0,500,600);
     stage.addChild(win);
@@ -228,6 +243,8 @@ function win(){
 }
 
 function reset(){
+    stage.removeAllChildren();
+    loading();
     circle.x = screen_width/2;
     circle.y = screen_height/2;
     speed_x_circle = default_circle_speed;
@@ -274,6 +291,14 @@ function handleKeyDown(e) {
             key_left_down = false;
             key_right_down = true;
             break;
+        case 80:
+            pause = !pause;
+            break;
+        default:
+            if(!startGame){
+                startGame = true;
+                stage.removeChild(press_to_continue);
+            }
     }
 }
 
