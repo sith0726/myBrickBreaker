@@ -8,7 +8,7 @@ var max_speed = 3;
 
 var speed_x_circle = default_circle_speed;
 var speed_y_circle = default_circle_speed;
-var speed_x_rect = 5;
+var speed_x_rect = 0;
 
 var circle;
 var rect;
@@ -31,6 +31,12 @@ var win;
 var lose;
 
 var preloader;
+
+document.onkeydown = handleKeyDown;
+document.onkeyup = handleKeyUp;
+
+var key_left_down = false;
+var key_right_down = false;
 
 function init(){
     
@@ -122,9 +128,6 @@ function handleComplete() {
     }
 }
 
-
-   
-
 function updateCircle(circle){
     if(circle.x >= screen_width - circle_radius || circle.x <= circle_radius){
         speed_x_circle = -speed_x_circle;
@@ -137,8 +140,17 @@ function updateCircle(circle){
 }
 
 function updateRect(rect){
-    if(rect.x >= screen_width - rect_width || rect.x <= 0){
-        speed_x_rect = -speed_x_rect;
+    if (key_left_down) {
+        speed_x_rect = -4;
+    } else if (key_right_down) {
+        speed_x_rect = 4;
+    } else {
+        speed_x_rect = 0;
+    }
+
+    virtualPos = rect.x + speed_x_rect;
+    if(virtualPos > screen_width - rect_width || virtualPos < 0){
+        speed_x_rect = 0;
     }
     rect.x += speed_x_rect;
 }
@@ -203,5 +215,39 @@ function testHitBlock(stage, circle, blocks){
                 return;
             }
         }
+    }
+}
+
+function handleKeyDown(e) {
+    if (!e) {
+        var e = window.event;
+    }
+    switch(e.keyCode) {
+        //left arrow key
+        case 37:
+            key_left_down = true;
+            key_right_down = false;
+            break;
+        //right arrow key
+        case 39:
+            key_left_down = false;
+            key_right_down = true;
+            break;
+    }
+}
+
+function handleKeyUp(e) {
+        if (!e) {
+        var e = window.event;
+    }
+    switch(e.keyCode) {
+        //left arrow key
+        case 37:
+            key_left_down = false;
+            break;
+        //right arrow key
+        case 39:
+            key_right_down = false;
+            break;
     }
 }
