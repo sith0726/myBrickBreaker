@@ -58,7 +58,6 @@ function init(){
     
     var rect = new createjs.Shape();
     rect.graphics.beginFill("Black").drawRoundRect(200,470,100,10,3);
-    
     stage.addChild(rect);
     stage.update();
     
