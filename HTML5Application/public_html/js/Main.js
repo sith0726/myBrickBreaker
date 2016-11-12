@@ -36,7 +36,7 @@ document.getElementById("PongStage").style.background = 'Gainsboro';
 
 var speed_x_circle = 1;
 var speed_y_circle = 1;
-var speed_x_rect = 3;
+var speed_x_rect = 1;
 
 //var tkr = new Object;
 ////preloader
@@ -57,7 +57,7 @@ function init(){
     stage.update();
     
     var rect = new createjs.Shape();
-    rect.graphics.beginFill("Black").drawRoundRect(0,0,100,31,0,);
+    rect.graphics.beginFill("Black").drawRoundRect(200,470,100,10,3);
     
     stage.addChild(rect);
     stage.update();
@@ -66,6 +66,7 @@ function init(){
     createjs.Ticker.setInterval(10);
     function tick(){
         updateCircle(circle);
+        updateRect(rect);
         stage.update();
     }
     
@@ -100,17 +101,17 @@ function addTitleView(){
 
 function updateCircle(circle){
     if(circle.x >= 492 || circle.x <= 8){
-        speed_x = -speed_x;
+        speed_x_circle = -speed_x_circle;
     }
     if(circle.y >= 498 || circle.y <= 8){
-        speed_y = -speed_y;
+        speed_y_circle = -speed_y_circle;
     }
-    circle.x += speed_x;
-    circle.y += speed_y;
+    circle.x += speed_x_circle;
+    circle.y += speed_y_circle;
 }
 
 function updateRect(rect){
-    if(rect.x >= 492 || rect.x <= 8){
+    if(rect.x >= 400 || rect.x <= 10){
         speed_x_rect = -speed_x_rect;
     }
     rect.x += speed_x_rect;
