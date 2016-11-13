@@ -213,6 +213,12 @@ function loading2() {
     text.x = 150;
     text.y = 300;
     text.textBaseline = "alphabetic";
+    text.addEventListener("click", handleTextClick)
+    function handleTextClick(event) {
+        alert("going back to main menu");
+        stage.removeAllChildren();
+        handleComplete();
+    }
     stage.addChild(text);
     stage.update();
 }
