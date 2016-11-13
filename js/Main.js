@@ -116,6 +116,7 @@ function handleComplete() {
     start_button.addEventListener("click", handleClick);
     function handleClick(event) { 
         stage.removeChild(start_button)
+        stage.removeChild(bg)
         stage.update()
         loading();
     }
@@ -133,15 +134,18 @@ function handleComplete() {
 function loading() {
     startGame = false;
 
+    var bg_scale = new createjs.Matrix2D();
+    bg_scale.scale(4, 7);
+    bg = new createjs.Shape();
+    bg.graphics.beginBitmapFill(preloader.getResult("bg"), "no-repeat", bg_scale).drawRect(0,0,500,600);
+    stage.addChild(bg);
 
-    
     var press_scale = new createjs.Matrix2D();
     press_scale.scale(0.48, 0.5);
     press_to_continue = new createjs.Shape();
     press_to_continue.graphics.beginBitmapFill(preloader.getResult("press_to_continue"), "no-repeat", press_scale).drawRect(0,0,500,600);
     press_to_continue.y = 300
     stage.addChild(press_to_continue);
-    stage.update();
 
     var pause_scale = new createjs.Matrix2D();
     pause_scale.scale(2, 0.5);
@@ -156,7 +160,6 @@ function loading() {
     Trump1.x = 100;
     Trump1.y = 0;
     stage.addChild(Trump1);
-    stage.update();
          
     var circle_scale = new createjs.Matrix2D();
     circle_scale.scale(0.10, 0.10);
@@ -165,14 +168,12 @@ function loading() {
     circle.x = screen_width/2;
     circle.y = screen_height - rect_height - circle_radius - 10;
     stage.addChild(circle);
-    stage.update();
     
     rect = new createjs.Shape();
     rect.graphics.beginBitmapFill(preloader.getResult("rect")).drawRoundRect(0,0,rect_width,rect_height,3);
     rect.x = (screen_width - rect_width)/2;
     rect.y = screen_height - rect_height - 10;
     stage.addChild(rect);
-    stage.update();
 
     var block_scale = new createjs.Matrix2D();
     block_scale.scale(1, 0.49);
@@ -184,9 +185,8 @@ function loading() {
         brick.y = block_height*Math.floor(i/block_per_row);
         blocks.push(brick);
         stage.addChild(brick);
-        stage.update();
     }
-
+    stage.update();
     audio_wrong = new Audio('resources/wrong1.mp3');
 }
 
