@@ -37,6 +37,9 @@ var press_to_continue;
 
 //Audio:
 var audio_wrong;
+var audio_America_Great_Again;
+var audio_youre_finished;
+var audio_mix;
 
 //Win - Lose
 var win;
@@ -70,14 +73,13 @@ function init(){
     manifest = [
         {src:"resources/bg.png", id:"bg"},
         {src:"resources/brick.png", id:"brick"},
-        {src:"resources/start.png", id:"multistart"},
         {src:"resources/start2.png", id:"start"},
         {src:"resources/paddle.png", id:"rect"},
         {src:"resources/ball.png", id:"circle"},
         {src:"resources/press_to_continue.png", id:"press_to_continue"},
         {src:"resources/pause.png", id:"pause"},
         {src:"resources/Trump1.png", id:"Trump1"},
-        {src:"resources/Trump2.png", id:"Trump2"},
+        {src:"resources/Trump3.png", id:"Trump3"},
         {src:"resources/win.png", id:"win"},
         {src:"resources/lose.png", id:"lose"}
     ];
@@ -98,7 +100,7 @@ function init(){
 function play(){
     if(pausing)
         return;
-    if(!startGame)
+    if(!startGame || end)
         return;
     updateCircle(circle);
     updateRect(rect);
@@ -113,38 +115,28 @@ function handleComplete() {
     bg.graphics.beginBitmapFill(preloader.getResult("bg"), "no-repeat", bg_scale).drawRect(0,0,500,600);
     stage.addChild(bg);
 
+    var Trump3_scale = new createjs.Matrix2D();
+    Trump3_scale.scale(0.77, 0.85);
+    Trump3 = new createjs.Shape();
+    Trump3.graphics.beginBitmapFill(preloader.getResult("Trump3"), "no-repeat", Trump3_scale).drawRect(0,0,500,600);
+    Trump3.y = 100
+    stage.addChild(Trump3);
+
     var start_button = new createjs.Bitmap(preloader.getResult("start"));
-    start_button.addEventListener("click", handleStartClick);
-    function handleStartClick(event) { 
+    start_button.addEventListener("click", handleClick);
+    function handleClick(event) { 
         stage.removeChild(start_button)
-        stage.removeChild(multistart_button)
         stage.removeChild(bg)
         stage.update()
         loading();
     }
 
-    var multistart_button = new createjs.Bitmap(preloader.getResult("multistart"));
-    multistart_button.addEventListener("click", handleMultistartClick);
-    function handleMultistartClick(event) {
-        stage.removeChild(start_button)
-        stage.removeChild(multistart_button)
-        stage.removeChild(bg)
-        stage.update()
-        loading2();
-    }
-
-    start_button.scaleX = 0.4;
-    start_button.scaleY = 0.4;
-    start_button.x = 80;
-    start_button.y = 300;
-
-    multistart_button.scaleX = 0.4;
-    multistart_button.scaleY = 0.4;
-    multistart_button.x = 80;
-    multistart_button.y = 440;
+    start_button.scaleX = 0.5;
+    start_button.scaleY = 0.5;
+    start_button.x = 50;
+    start_button.y = 400;
 
     stage.addChild(start_button);
-    stage.addChild(multistart_button);
     stage.update();
 }
 
@@ -205,22 +197,13 @@ function loading() {
         stage.addChild(brick);
     }
     stage.update();
-    audio_wrong = new Audio('resources/wrong1.mp3');
-}
+    
+    
+    audio_wrong = new Audio('resources/wrong.mp3');
+    audio_America_Great_Again = new Audio('resources/AmericaGreatAgain.mp3');
+    audio_youre_finished = new Audio('resources/youre_finished.mp3');
+    audio_mix = [audio_youre_finished, audio_wrong];
 
-function loading2() {
-    var text = new createjs.Text("Multiplayer window", "24px Garamond", "black");
-    text.x = 150;
-    text.y = 300;
-    text.textBaseline = "alphabetic";
-    text.addEventListener("click", handleTextClick)
-    function handleTextClick(event) {
-        alert("going back to main menu");
-        stage.removeAllChildren();
-        handleComplete();
-    }
-    stage.addChild(text);
-    stage.update();
 }
 
 function updateCircle(circle){
@@ -285,6 +268,8 @@ function hitTest(stage, circle, rect, blocks){
 }
 
 function lose_stage(){
+    audio_America_Great_Again.play();
+    stage.removeAllChildren();
     var lose_scale = new createjs.Matrix2D();
     lose_scale.scale(1.2,1.35);
     lose = new createjs.Shape();
@@ -295,6 +280,7 @@ function lose_stage(){
 }
 
 function win_stage(){
+    stage.removeAllChildren();
     var win_scale = new createjs.Matrix2D();
     win_scale.scale(1.3,1.55);
     win = new createjs.Shape();
@@ -319,7 +305,7 @@ function testHitBlock(stage, circle, blocks){
         if(circle.x >= blocks[i].x && circle.x <= blocks[i].x+block_width){
             if((blocks[i].y -circle.y >= -(circle_radius+block_height) && blocks[i].y -circle.y < -circle_radius && speed_y_circle < 0) 
                     || (blocks[i].y -circle.y <= circle_radius && blocks[i].y -circle.y > 0 && speed_y_circle > 0)){
-                audio_wrong.play();
+                audio_mix[i%2].play();
                 speed_y_circle = -speed_y_circle;
                 stage.removeChild(blocks[i]);
                 stage.update();
@@ -330,7 +316,7 @@ function testHitBlock(stage, circle, blocks){
         if(circle.y >= blocks[i].y && circle.y <= blocks[i].y+block_height){
             if((blocks[i].x -circle.x >= -(block_width + circle_radius) && blocks[i].x -circle.x < -circle_radius && speed_x_circle < 0) 
                     || (blocks[i].x -circle.x <= circle_radius && blocks[i].x -circle.x > 0 && speed_x_circle > 0)){
-                audio_wrong.play();
+                audio_mix[i%3].play();
                 speed_x_circle = -speed_x_circle;
                 stage.removeChild(blocks[i]);
                 stage.update();
