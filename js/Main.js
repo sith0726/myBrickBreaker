@@ -26,7 +26,7 @@ var block_width = 100;
 var block_height = 50;
 
 //Number of blocks
-var block_per_row = 50;
+var block_per_row = 5;
 var block_per_col = 4;
 var number_of_blocks = block_per_row*block_per_col;
 
@@ -70,6 +70,7 @@ function init(){
     manifest = [
         {src:"resources/bg.png", id:"bg"},
         {src:"resources/brick.png", id:"brick"},
+        {src:"resources/start.png", id:"multistart"},
         {src:"resources/start2.png", id:"start"},
         {src:"resources/paddle.png", id:"rect"},
         {src:"resources/ball.png", id:"circle"},
@@ -113,20 +114,37 @@ function handleComplete() {
     stage.addChild(bg);
 
     var start_button = new createjs.Bitmap(preloader.getResult("start"));
-    start_button.addEventListener("click", handleClick);
-    function handleClick(event) { 
+    start_button.addEventListener("click", handleStartClick);
+    function handleStartClick(event) { 
         stage.removeChild(start_button)
+        stage.removeChild(multistart_button)
         stage.removeChild(bg)
         stage.update()
         loading();
     }
 
-    start_button.scaleX = 0.5;
-    start_button.scaleY = 0.5;
-    start_button.x = 50;
-    start_button.y = 400;
+    var multistart_button = new createjs.Bitmap(preloader.getResult("multistart"));
+    multistart_button.addEventListener("click", handleMultistartClick);
+    function handleMultistartClick(event) {
+        stage.removeChild(start_button)
+        stage.removeChild(multistart_button)
+        stage.removeChild(bg)
+        stage.update()
+        loading2();
+    }
+
+    start_button.scaleX = 0.4;
+    start_button.scaleY = 0.4;
+    start_button.x = 80;
+    start_button.y = 300;
+
+    multistart_button.scaleX = 0.4;
+    multistart_button.scaleY = 0.4;
+    multistart_button.x = 80;
+    multistart_button.y = 440;
 
     stage.addChild(start_button);
+    stage.addChild(multistart_button);
     stage.update();
 }
 
@@ -188,6 +206,15 @@ function loading() {
     }
     stage.update();
     audio_wrong = new Audio('resources/wrong1.mp3');
+}
+
+function loading2() {
+    var text = new createjs.Text("Multiplayer window", "24px Garamond", "black");
+    text.x = 150;
+    text.y = 300;
+    text.textBaseline = "alphabetic";
+    stage.addChild(text);
+    stage.update();
 }
 
 function updateCircle(circle){
@@ -291,7 +318,6 @@ function testHitBlock(stage, circle, blocks){
                 stage.removeChild(blocks[i]);
                 stage.update();
                 blocks.splice(i,1);
-
                 return;
             }
         }
