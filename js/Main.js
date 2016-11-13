@@ -32,13 +32,12 @@ var number_of_blocks = block_per_row*block_per_col;
 
 //Pictures
 var Trump1;
-var Trump2;
+var Trump3;
 var press_to_continue;
 
 //Audio:
 var audio_wrong;
 var audio_America_Great_Again;
-var audio_youre_finished;
 var audio_mix;
 
 //Win - Lose
@@ -59,6 +58,12 @@ document.onmousedown = reset
 var key_left_down = false;
 var key_right_down = false;
 
+
+var three;
+var two;
+var one;
+var go;
+
 //Control var
 var startGame = false;
 var pause;
@@ -66,51 +71,80 @@ var pausing = false;
 var end = false;
 
 function init(){
+    
     stage = new createjs.Stage("PongStage");
-    //for debug only, turn false if you want to load the resources on your local computer
-    var debug_localResources = false;
-    if (debug_localResources) {
-        manifest = [
-        {src: "resources/bg.png", id:"bg"},
-        {src: "resources/brick.png", id:"brick"},
-        {src: "resources/start.png", id:"multistart"},
-        {src: "resources/start2.png", id:"start"},
-        {src: "resources/paddle.png", id:"rect"},
-        {src: "resources/ball.png", id:"circle"},
-        {src: "resources/press_to_continue.png", id:"press_to_continue"},
-        {src: "resources/pause.png", id:"pause"},
-        {src: "resources/Trump1.png", id:"Trump1"},
-        {src: "resources/Trump3.png", id:"Trump3"},
-        {src: "resources/win.png", id:"win"},
-        {src: "resources/lose.png", id:"lose"}
+    
+        
+    manifest = [
+        {src:"resources/bg.png", id:"bg"},
+        {src:"resources/brick.png", id:"brick"},
+        {src:"resources/start2.png", id:"start"},
+        {src:"resources/paddle.png", id:"rect"},
+        {src:"resources/ball.png", id:"circle"},
+        {src:"resources/press_to_continue.png", id:"press_to_continue"},
+        {src:"resources/pause.png", id:"pause"},
+        {src:"resources/Trump1.png", id:"Trump1"},
+        {src:"resources/Trump3.png", id:"Trump3"},
+        {src:"resources/win.png", id:"win"},
+        {src:"resources/lose.png", id:"lose"},
+        {src:"resources/1.png", id:"one"},
+        {src:"resources/2.png", id:"two"},
+        {src:"resources/3.png", id:"three"},
+        {src:"resources/go.png", id:"go"}
     ];
-    } else {
-        manifest = [
-        {src: "http://" + serverAddress + "/resources/bg.png", id:"bg"},
-        {src: "http://" + serverAddress + "/resources/brick.png", id:"brick"},
-        {src: "http://" + serverAddress + "/resources/start.png", id:"multistart"},
-        {src: "http://" + serverAddress + "/resources/start2.png", id:"start"},
-        {src: "http://" + serverAddress + "/resources/paddle.png", id:"rect"},
-        {src: "http://" + serverAddress + "/resources/ball.png", id:"circle"},
-        {src: "http://" + serverAddress + "/resources/press_to_continue.png", id:"press_to_continue"},
-        {src: "http://" + serverAddress + "/resources/pause.png", id:"pause"},
-        {src: "http://" + serverAddress + "/resources/Trump1.png", id:"Trump1"},
-        {src: "http://" + serverAddress + "/resources/Trump3.png", id:"Trump3"},
-        {src: "http://" + serverAddress + "/resources/win.png", id:"win"},
-        {src: "http://" + serverAddress + "/resources/lose.png", id:"lose"}
-    ];
-    }
-
 
     preloader = new createjs.LoadQueue(false);
     preloader.addEventListener("complete", handleComplete);
     preloader.loadManifest(manifest, true, "./");
 
-    
-    createjs.Ticker.addEventListener("tick", tick);
-    createjs.Ticker.setInterval(10);
+    Ticker = createjs.Ticker;
+    Ticker.addEventListener("tick", tick);
+    Ticker.setInterval(10);
     
     function tick(){
+        if(Ticker.getTicks() - startTick == 1){
+            var three_scale = new createjs.Matrix2D();
+            three_scale.scale(1, 1);
+            three = new createjs.Shape();
+            three.graphics.beginBitmapFill(preloader.getResult("three"), "no-repeat", three_scale).drawRect(0,0,100,300);
+            three.x=200;
+            three.y=250;
+            stage.addChild(three);
+            stage.update();
+        }
+        if(Ticker.getTicks() - startTick == 100){
+            stage.removeChild(three);
+            var two_scale = new createjs.Matrix2D();
+            two_scale.scale(1, 1);
+            two = new createjs.Shape();
+            two.graphics.beginBitmapFill(preloader.getResult("two"), "no-repeat", two_scale).drawRect(0,0,500,600);
+            stage.addChild(two);
+            stage.update();
+        }
+        if(Ticker.getTicks() - startTick == 200){
+            stage.removeChild(two);
+            var one_scale = new createjs.Matrix2D();
+            one_scale.scale(1, 1);
+            one = new createjs.Shape();
+            one.graphics.beginBitmapFill(preloader.getResult("one"), "no-repeat", one_scale).drawRect(0,0,500,600);
+            stage.addChild(one); 
+            stage.update();
+
+        }
+        if(Ticker.getTicks() - startTick == 300){
+            stage.removeChild(one);
+            var go_scale = new createjs.Matrix2D();
+            go_scale.scale(1, 1);
+            go = new createjs.Shape();
+            go.graphics.beginBitmapFill(preloader.getResult("go"), "no-repeat", go_scale).drawRect(0,0,500,600);
+            stage.addChild(go);
+            stage.update();
+        }
+        if(Ticker.getTicks() - startTick == 350){
+            stage.removeChild(go);
+            startGame = true;
+            stage.update();
+        }
         play();
     }
 }
@@ -133,44 +167,31 @@ function handleComplete() {
     bg.graphics.beginBitmapFill(preloader.getResult("bg"), "no-repeat", bg_scale).drawRect(0,0,500,600);
     stage.addChild(bg);
 
+    var Trump3_scale = new createjs.Matrix2D();
+    Trump3_scale.scale(0.77, 0.85);
+    Trump3 = new createjs.Shape();
+    Trump3.graphics.beginBitmapFill(preloader.getResult("Trump3"), "no-repeat", Trump3_scale).drawRect(0,0,500,600);
+    Trump3.y = 100
+    stage.addChild(Trump3);
+
     var start_button = new createjs.Bitmap(preloader.getResult("start"));
-    start_button.addEventListener("click", handleStartClick);
-    function handleStartClick(event) { 
-        stage.removeChild(start_button);
-        stage.removeChild(multistart_button);
-        stage.removeChild(bg);
-        stage.update();
+    start_button.addEventListener("click", handleClick);
+    function handleClick(event) { 
+        stage.removeChild(start_button)
+        stage.removeChild(bg)
+        stage.update()
         loading();
     }
 
-    var multistart_button = new createjs.Bitmap(preloader.getResult("multistart"));
-    multistart_button.addEventListener("click", handleMultistartClick);
-    function handleMultistartClick(event) {
-        stage.removeChild(start_button);
-        stage.removeChild(multistart_button);
-        stage.removeChild(bg);
-        stage.update();
-        loading2();
-    }
+    start_button.scaleX = 0.5;
+    start_button.scaleY = 0.5;
+    start_button.x = 50;
+    start_button.y = 400;
 
-    var multiplayer_container = new createjs.Container()
-    multiplayer_container.addChild(start_button);
-    multiplayer_container.x = 90;
-    multiplayer_container.y = 100;
-    
-    start_button.scaleX = 0.4;
-    start_button.scaleY = 0.4;
-    start_button.x = 90;
-    start_button.y = 300;
-
-    multistart_button.scaleX = 0.4;
-    multistart_button.scaleY = 0.4;
-    multistart_button.x = 90;
-    multistart_button.y = 440;
-
-    stage.addChild(start_button, multistart_button, multiplayer_container);
+    stage.addChild(start_button);
     stage.update();
 }
+
 
 function loading() {
     startGame = false;
@@ -232,26 +253,8 @@ function loading() {
     
     audio_wrong = new Audio('resources/wrong.mp3');
     audio_America_Great_Again = new Audio('resources/AmericaGreatAgain.mp3');
-    audio_youre_finished = new Audio('resources/youre_finished.mp3');
-    audio_mix = [audio_youre_finished, audio_wrong];
 
 }
-
-function loading2() {
-    var text = new createjs.Text("Multiplayer window", "24px Garamond", "black");
-    text.x = 150;
-    text.y = 300;
-    text.textBaseline = "alphabetic";
-    text.addEventListener("click", handleTextClick)
-    function handleTextClick(event) {
-        alert("going back to main menu");
-        stage.removeAllChildren();
-        handleComplete();
-    }
-    stage.addChild(text);
-    stage.update();
-}
-
 
 function updateCircle(circle){
     if(circle.x >= screen_width - circle_radius || circle.x <= circle_radius){
@@ -352,7 +355,7 @@ function testHitBlock(stage, circle, blocks){
         if(circle.x >= blocks[i].x && circle.x <= blocks[i].x+block_width){
             if((blocks[i].y -circle.y >= -(circle_radius+block_height) && blocks[i].y -circle.y < -circle_radius && speed_y_circle < 0) 
                     || (blocks[i].y -circle.y <= circle_radius && blocks[i].y -circle.y > 0 && speed_y_circle > 0)){
-                audio_mix[i%2].play();
+                audio_wrong.play();
                 speed_y_circle = -speed_y_circle;
                 stage.removeChild(blocks[i]);
                 stage.update();
@@ -363,7 +366,7 @@ function testHitBlock(stage, circle, blocks){
         if(circle.y >= blocks[i].y && circle.y <= blocks[i].y+block_height){
             if((blocks[i].x -circle.x >= -(block_width + circle_radius) && blocks[i].x -circle.x < -circle_radius && speed_x_circle < 0) 
                     || (blocks[i].x -circle.x <= circle_radius && blocks[i].x -circle.x > 0 && speed_x_circle > 0)){
-                audio_mix[i%3].play();
+                audio_wrong.play();
                 speed_x_circle = -speed_x_circle;
                 stage.removeChild(blocks[i]);
                 stage.update();
@@ -373,6 +376,9 @@ function testHitBlock(stage, circle, blocks){
         }
     }
 }
+
+var startTick;
+
 
 function handleKeyDown(e) {
     if (!e) {
@@ -405,8 +411,9 @@ function handleKeyDown(e) {
             break;
         default:
             if(!startGame){
-                startGame = true;
                 stage.removeChild(press_to_continue);
+                startTick = Ticker.getTicks();
+                stage.update();
             }
     }
 }
@@ -427,61 +434,4 @@ function handleKeyUp(e) {
             key_right_down = false;
             break;
     }
-}
-
-/**
- * Client networking
- */
-/*
-Client to Server Signal list:
-"joinGameRequest" : this singal is sent by player when he pressed multiplayer button.
-                    The server will try to match or create a lobby.
-"disconnect" :  sent by player when disconnect.
-                If player is in lobby, remove that player in lobby.
-                If player is in game, change the player's side to wall.
-"ready" :   sent by player when he/she is ready in lobby.
-            When both players are ready, the game starts.
-"move" : Sent when player moves. Contains the new position of paddle.
-
-Server to Client Signal list:
-"lobbyInfo" : Contains the info of lobby. Sent when updating lobby info.
-"playerDisconnect" : Notify that players leaves the game.
-"mapUpdate" : Contains the new position of paddles of both players.
-"serverShutDown" : server shut down.
-""
-*/
-//the server address
-var serverAddress = "10.226.134.240:3000";
-//single mode: true if single player, false if multiplayer
-var singleMode; // = ?
-//the socket
-var socket;
-
-//connect to the server and bind the signal functions
-function connectServer() {
-    socket = io(serverAddress);
-    socket.on('lobbyInfo', handleLobbyInfo);
-    socket.on('playerDisconnect', handlePlayerDisconnect);
-    socket.ong('mapUpdate', handleMapUpdate);
-    socket.on('serverShutDown', handleServerShutDown);
-}
-
-//handleLobby
-function handleLobbyInfo(message) {
-
-}
-
-//handlePlayerDisconnect
-function handlePlayerDisconnect(message) {
-
-}
-
-//handle mapUpdate
-function handleMapUpdate(message) {
-
-}
-
-//handle serverShutDown
-function handleServerShutDown(message) {
-
 }
