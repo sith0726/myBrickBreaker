@@ -73,9 +73,11 @@ var end = false;
 function init(){
     
     stage = new createjs.Stage("PongStage");
-    
-        
-    manifest = [
+
+    //for debug only, turn true if you want to load the resources on your local computer
+    var debug_localResources = true;
+    if (debug_localResources) {
+        manifest = [
         {src:"resources/bg.png", id:"bg"},
         {src:"resources/brick.png", id:"brick"},
         {src:"resources/start2.png", id:"start"},
@@ -92,6 +94,25 @@ function init(){
         {src:"resources/3.png", id:"three"},
         {src:"resources/go.png", id:"go"}
     ];
+    } else {
+        manifest = [
+        {src:"http://" + serverAddress + "/resources/bg.png", id:"bg"},
+        {src:"http://" + serverAddress + "/resources/brick.png", id:"brick"},
+        {src:"http://" + serverAddress + "/resources/start2.png", id:"start"},
+        {src:"http://" + serverAddress + "/resources/paddle.png", id:"rect"},
+        {src:"http://" + serverAddress + "/resources/ball.png", id:"circle"},
+        {src:"http://" + serverAddress + "/resources/press_to_continue.png", id:"press_to_continue"},
+        {src:"http://" + serverAddress + "/resources/pause.png", id:"pause"},
+        {src:"http://" + serverAddress + "/resources/Trump1.png", id:"Trump1"},
+        {src:"http://" + serverAddress + "/resources/Trump3.png", id:"Trump3"},
+        {src:"http://" + serverAddress + "/resources/win.png", id:"win"},
+        {src:"http://" + serverAddress + "/resources/lose.png", id:"lose"},
+        {src:"http://" + serverAddress + "/resources/1.png", id:"one"},
+        {src:"http://" + serverAddress + "/resources/2.png", id:"two"},
+        {src:"http://" + serverAddress + "/resources/3.png", id:"three"},
+        {src:"http://" + serverAddress + "/resources/go.png", id:"go"}
+    ];
+    }
 
     preloader = new createjs.LoadQueue(false);
     preloader.addEventListener("complete", handleComplete);
@@ -434,4 +455,61 @@ function handleKeyUp(e) {
             key_right_down = false;
             break;
     }
+}
+
+/**
+ * Client networking
+ */
+/*
+Client to Server Signal list:
+"joinGameRequest" : this singal is sent by player when he pressed multiplayer button.
+                    The server will try to match or create a lobby.
+"disconnect" :  sent by player when disconnect.
+                If player is in lobby, remove that player in lobby.
+                If player is in game, change the player's side to wall.
+"ready" :   sent by player when he/she is ready in lobby.
+            When both players are ready, the game starts.
+"move" : Sent when player moves. Contains the new position of paddle.
+
+Server to Client Signal list:
+"lobbyInfo" : Contains the info of lobby. Sent when updating lobby info.
+"playerDisconnect" : Notify that players leaves the game.
+"mapUpdate" : Contains the new position of paddles of both players.
+"serverShutDown" : server shut down.
+""
+*/
+//the server address (change to your IP address when debug)
+var serverAddress = "10.142.76.157:3000";
+//single mode: true if single player, false if multiplayer
+var singleMode; // = ?
+//the socket
+var socket;
+
+//connect to the server and bind the signal functions
+function connectServer() {
+    socket = io(serverAddress);
+    socket.on('lobbyInfo', handleLobbyInfo);
+    socket.on('playerDisconnect', handlePlayerDisconnect);
+    socket.ong('mapUpdate', handleMapUpdate);
+    socket.on('serverShutDown', handleServerShutDown);
+}
+
+//handleLobby
+function handleLobbyInfo(message) {
+
+}
+
+//handlePlayerDisconnect
+function handlePlayerDisconnect(message) {
+
+}
+
+//handle mapUpdate
+function handleMapUpdate(message) {
+
+}
+
+//handle serverShutDown
+function handleServerShutDown(message) {
+
 }
