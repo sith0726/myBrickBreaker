@@ -70,7 +70,7 @@ function init(){
     manifest = [
         {src:"resources/bg.png", id:"bg"},
         {src:"resources/brick.png", id:"brick"},
-        {src:"resources/start.png", id:"start"},
+        {src:"resources/start2.png", id:"start"},
         {src:"resources/paddle.png", id:"rect"},
         {src:"resources/ball.png", id:"circle"},
         {src:"resources/press_to_continue.png", id:"press_to_continue"},
@@ -82,7 +82,7 @@ function init(){
     ];
 
     preloader = new createjs.LoadQueue(false);
-    preloader.addEventListener("complete", loading);
+    preloader.addEventListener("complete", handleComplete);
     preloader.loadManifest(manifest, true, "./");
 
     
@@ -105,15 +105,35 @@ function play(){
     stage.update();
 }
 
-function loading() {
-    startGame = false;
-
+function handleComplete() {
     var bg_scale = new createjs.Matrix2D();
     bg_scale.scale(4, 7);
     bg = new createjs.Shape();
     bg.graphics.beginBitmapFill(preloader.getResult("bg"), "no-repeat", bg_scale).drawRect(0,0,500,600);
     stage.addChild(bg);
+
+    var start_button = new createjs.Bitmap(preloader.getResult("start"));
+    start_button.addEventListener("click", handleClick);
+    function handleClick(event) { 
+        stage.removeChild(start_button)
+        stage.update()
+        loading();
+    }
+
+    start_button.scaleX = 0.5;
+    start_button.scaleY = 0.5;
+    start_button.x = 50;
+    start_button.y = 400;
+
+    stage.addChild(start_button);
     stage.update();
+}
+
+
+function loading() {
+    startGame = false;
+
+
     
     var press_scale = new createjs.Matrix2D();
     press_scale.scale(0.48, 0.5);
