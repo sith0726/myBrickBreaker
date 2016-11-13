@@ -115,31 +115,44 @@ function handleComplete() {
     bg.graphics.beginBitmapFill(preloader.getResult("bg"), "no-repeat", bg_scale).drawRect(0,0,500,600);
     stage.addChild(bg);
 
-    var Trump3_scale = new createjs.Matrix2D();
-    Trump3_scale.scale(0.77, 0.85);
-    Trump3 = new createjs.Shape();
-    Trump3.graphics.beginBitmapFill(preloader.getResult("Trump3"), "no-repeat", Trump3_scale).drawRect(0,0,500,600);
-    Trump3.y = 100
-    stage.addChild(Trump3);
-
     var start_button = new createjs.Bitmap(preloader.getResult("start"));
-    start_button.addEventListener("click", handleClick);
-    function handleClick(event) { 
-        stage.removeChild(start_button)
-        stage.removeChild(bg)
-        stage.update()
+    start_button.addEventListener("click", handleStartClick);
+    function handleStartClick(event) { 
+        stage.removeChild(start_button);
+        stage.removeChild(multistart_button);
+        stage.removeChild(bg);
+        stage.update();
         loading();
     }
 
-    start_button.scaleX = 0.5;
-    start_button.scaleY = 0.5;
-    start_button.x = 50;
-    start_button.y = 400;
+    var multistart_button = new createjs.Bitmap(preloader.getResult("multistart"));
+    multistart_button.addEventListener("click", handleMultistartClick);
+    function handleMultistartClick(event) {
+        stage.removeChild(start_button);
+        stage.removeChild(multistart_button);
+        stage.removeChild(bg);
+        stage.update();
+        loading2();
+    }
 
-    stage.addChild(start_button);
+    var multiplayer_container = new createjs.Container()
+    multiplayer_container.addChild(start_button);
+    multiplayer_container.x = 90;
+    multiplayer_container.y = 100;
+    
+    start_button.scaleX = 0.4;
+    start_button.scaleY = 0.4;
+    start_button.x = 90;
+    start_button.y = 300;
+
+    multistart_button.scaleX = 0.4;
+    multistart_button.scaleY = 0.4;
+    multistart_button.x = 90;
+    multistart_button.y = 440;
+
+    stage.addChild(start_button, multistart_button, multiplayer_container);
     stage.update();
 }
-
 
 function loading() {
     startGame = false;
@@ -205,6 +218,22 @@ function loading() {
     audio_mix = [audio_youre_finished, audio_wrong];
 
 }
+
+function loading2() {
+    var text = new createjs.Text("Multiplayer window", "24px Garamond", "black");
+    text.x = 150;
+    text.y = 300;
+    text.textBaseline = "alphabetic";
+    text.addEventListener("click", handleTextClick)
+    function handleTextClick(event) {
+        alert("going back to main menu");
+        stage.removeAllChildren();
+        handleComplete();
+    }
+    stage.addChild(text);
+    stage.update();
+}
+
 
 function updateCircle(circle){
     if(circle.x >= screen_width - circle_radius || circle.x <= circle_radius){
