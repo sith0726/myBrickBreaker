@@ -1,0 +1,22 @@
+{
+  "name": "breakthewall",
+  "version": "1.0.0",
+  "description": "Brick Breaker CalHacks 3.0 2016",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sith0726/myBrickBreaker.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sith0726/myBrickBreaker/issues"
+  },
+  "homepage": "https://github.com/sith0726/myBrickBreaker#readme",
+  "dependencies": {
+    "express": "^4.14.0"
+  }
+}
