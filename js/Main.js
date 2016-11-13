@@ -139,6 +139,8 @@ function init(){
             two_scale.scale(1, 1);
             two = new createjs.Shape();
             two.graphics.beginBitmapFill(preloader.getResult("two"), "no-repeat", two_scale).drawRect(0,0,500,600);
+            two.x=200;
+            two.y=250;
             stage.addChild(two);
             stage.update();
         }
@@ -148,6 +150,8 @@ function init(){
             one_scale.scale(1, 1);
             one = new createjs.Shape();
             one.graphics.beginBitmapFill(preloader.getResult("one"), "no-repeat", one_scale).drawRect(0,0,500,600);
+            one.x=200;
+            one.y=250;
             stage.addChild(one); 
             stage.update();
 
@@ -158,6 +162,8 @@ function init(){
             go_scale.scale(1, 1);
             go = new createjs.Shape();
             go.graphics.beginBitmapFill(preloader.getResult("go"), "no-repeat", go_scale).drawRect(0,0,500,600);
+            go.x=200;
+            go.y=250;
             stage.addChild(go);
             stage.update();
         }
@@ -353,7 +359,7 @@ function lose_stage(){
 function win_stage(){
     stage.removeAllChildren();
     var win_scale = new createjs.Matrix2D();
-    win_scale.scale(1.3,1.55);
+    win_scale.scale(1.2,1.35);
     win = new createjs.Shape();
     win.graphics.beginBitmapFill(preloader.getResult("win"), "no-repeat", win_scale).drawRect(0,0,500,600);
     stage.addChild(win);
