@@ -73,6 +73,7 @@ function init(){
     manifest = [
         {src:"resources/bg.png", id:"bg"},
         {src:"resources/brick.png", id:"brick"},
+        {src:"resources/start.png", id:"multistart"},
         {src:"resources/start2.png", id:"start"},
         {src:"resources/paddle.png", id:"rect"},
         {src:"resources/ball.png", id:"circle"},
