@@ -1,0 +1,37 @@
+<html>
+    <head>
+        <title>PingPong</title>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="https://code.createjs.com/createjs-2015.11.26.min.js"></script>
+    </head>
+    <body onload="init();">
+        <canvas id="PongStage" width="500" height="600"></canvas>
+            <script>
+                var socket = io("http://10.226.134.240:3000");
+                var stage = new createjs.Stage("PongStage");
+                var myText;
+                var count = 0;
+
+                socket.on("c++", function() {
+                    count++;
+                    myText.text = count;
+                    stage.update();
+                });
+                document.onkeydown = handleKeyDown;
+                function init() {
+                    myText = new createjs.Text("Hello World", "20px Arial", "Black");
+                    myText.x = 100;
+                    stage.addChild(myText);
+                    stage.update();
+                }
+
+                function handleKeyDown(key) {
+                    socket.emit('iClick', { my: 'data' });
+                    count++;
+                    myText.text = count;
+                    stage.update();
+                }
+            </script>
+        <div></div>
+    </body>
+</html>
